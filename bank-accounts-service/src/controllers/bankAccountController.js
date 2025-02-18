@@ -1,7 +1,7 @@
 // bank-accounts-service/src/controllers/bankAccountController.js
 const { pool } = require('../database/db');
 const { generateAccountNumber } = require('../utils/numberGenerator');
-const { isValidCPF, isValidCNPJ } = require('../utils/documentValidator'); // Importa as funções de validação de documento
+const { isValidCPF, isValidCNPJ, isValidEmail } = require('../utils/validator'); // Importa isValidEmail também
 
 const createBankAccount = async (req, res) => {
   try {
@@ -19,20 +19,18 @@ const createBankAccount = async (req, res) => {
       return res.status(400).json({ message: 'Todos os campos obrigatórios devem ser preenchidos.' });
     }
 
-    // Validação do formato CPF/CNPJ do holderDocument (Nova Validação)
+    // Validação do formato CPF/CNPJ do holderDocument
     if (!isValidCPF(holderDocument) && !isValidCNPJ(holderDocument)) {
       return res.status(400).json({ message: 'O documento do titular deve ser um CPF ou CNPJ válido.' });
     }
 
-
-    // Validação do tamanho máximo de holderDocument (Removida - agora validamos formato CPF/CNPJ)
-    // const maxDocumentLength = 20;
-    // if (holderDocument.length > maxDocumentLength) {
-    //   return res.status(400).json({ message: `O documento do titular não pode ter mais de ${maxDocumentLength} caracteres.` });
-    // }
+    // Validação do formato de email do holderEmail (Nova Validação - RD05)
+    if (!isValidEmail(holderEmail)) {
+      return res.status(400).json({ message: 'O email do titular deve ter um formato válido.' });
+    }
 
 
-    // Validação do tamanho máximo de holderEmail (RD05)
+    // Validação do tamanho máximo de holderEmail (RD05) - Já validado pelo formato, mas podemos manter por segurança
     const maxEmailLength = 200; // RD05
     if (holderEmail.length > maxEmailLength) {
       return res.status(400).json({ message: `O email do titular não pode ter mais de ${maxEmailLength} caracteres.` });
