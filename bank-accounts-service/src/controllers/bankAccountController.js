@@ -85,6 +85,36 @@ const createBankAccount = async (req, res) => {
   }
 };
 
-module.exports = {
-  createBankAccount,
-};
+
+const getBankAccountByNumber = async (req, res) => {
+    try {
+      const accountNumber = req.params.accountNumber; // Pega o número da conta dos parâmetros da URL
+  
+      if (!accountNumber) {
+        return res.status(400).json({ message: 'Número da conta bancária é obrigatório para a busca.' });
+      }
+  
+      const result = await pool.query(
+        'SELECT * FROM BankAccounts WHERE number = $1', // Busca a conta pelo número
+        [accountNumber]
+      );
+  
+      const bankAccount = result.rows[0]; // Pega o primeiro resultado (ou undefined se não encontrar)
+  
+      if (!bankAccount) {
+        return res.status(404).json({ message: 'Conta bancária não encontrada.' }); // Retorna 404 se não encontrar
+      }
+  
+      res.status(200).json(bankAccount); // Retorna a conta bancária encontrada (status 200 OK)
+  
+    } catch (error) {
+      console.error('Erro ao buscar conta bancária por número:', error);
+      res.status(500).json({ message: 'Erro interno do servidor ao buscar conta bancária.' });
+    }
+  };
+  
+  
+  module.exports = {
+    createBankAccount,
+    getBankAccountByNumber, // Exporta a nova função getBankAccountByNumber
+  };
