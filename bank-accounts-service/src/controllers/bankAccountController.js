@@ -88,7 +88,7 @@ const createBankAccount = async (req, res) => {
 
 const getBankAccountByNumber = async (req, res) => {
     try {
-      const accountNumber = req.params.accountNumber; // Pega o número da conta dos parâmetros da URL
+      const accountNumber = req.params.accountNumber; 
   
       if (!accountNumber) {
         return res.status(400).json({ message: 'Número da conta bancária é obrigatório para a busca.' });
@@ -112,9 +112,39 @@ const getBankAccountByNumber = async (req, res) => {
       res.status(500).json({ message: 'Erro interno do servidor ao buscar conta bancária.' });
     }
   };
+
+
   
-  
-  module.exports = {
-    createBankAccount,
-    getBankAccountByNumber, // Exporta a nova função getBankAccountByNumber
-  };
+  const getBankAccountsByBranch = async (req, res) => {
+  try {
+    const branchCode = req.params.branch; // Pega o código da agência dos parâmetros da URL
+
+    if (!branchCode) {
+      return res.status(400).json({ message: 'Código da agência é obrigatório para a busca.' });
+    }
+
+    const result = await pool.query(
+      'SELECT * FROM BankAccounts WHERE branch = $1', // Busca contas pela agência
+      [branchCode]
+    );
+
+    const bankAccounts = result.rows; // Pega todos os resultados (pode ser um array vazio ou com várias contas)
+
+    if (bankAccounts.length === 0) {
+      return res.status(404).json({ message: 'Nenhuma conta bancária encontrada para esta agência.' }); // Retorna 404 se não encontrar contas na agência
+    }
+
+    res.status(200).json(bankAccounts); // Retorna o array de contas bancárias encontradas (status 200 OK)
+
+  } catch (error) {
+    console.error('Erro ao buscar contas bancárias por agência:', error);
+    res.status(500).json({ message: 'Erro interno do servidor ao buscar contas bancárias por agência.' });
+  }
+};
+
+
+module.exports = {
+  createBankAccount,
+  getBankAccountByNumber,
+  getBankAccountsByBranch, // Exporta a nova função getBankAccountsByBranch
+}

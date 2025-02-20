@@ -1,5 +1,5 @@
 function generateAccountNumber() {
-    const length = 5; // Define o comprimento fixo para 5 dígitos
+    const length = 5; 
     let accountNumber = '';
     const digits = '0123456789';
   

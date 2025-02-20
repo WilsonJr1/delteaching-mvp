@@ -2,7 +2,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const { connectToDatabase } = require('./database/db');
-const { createBankAccount, getBankAccountByNumber} = require('./controllers/bankAccountController'); // Importa o controlador
+const { createBankAccount, getBankAccountByNumber, getBankAccountsByBranch } = require('./controllers/bankAccountController')
 
 dotenv.config();
 
@@ -18,6 +18,8 @@ app.get('/', (req, res) => {
 app.post('/bank-accounts', createBankAccount); // Rota POST para criar conta, usando o controlador
 
 app.get('/bank-accounts/number/:accountNumber', getBankAccountByNumber);
+
+app.get('/bank-accounts/branch/:branch', getBankAccountsByBranch);
 
 async function startServer() {
   await connectToDatabase();

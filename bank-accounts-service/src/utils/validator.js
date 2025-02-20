@@ -1,5 +1,3 @@
-// bank-accounts-service/src/utils/validator.js
-
 function isValidEmail(email) {
     // Expressão regular para validar um formato de e-mail básico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
