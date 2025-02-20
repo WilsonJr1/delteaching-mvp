@@ -1,5 +1,4 @@
 function isValidEmail(email) {
-    // Expressão regular para validar um formato de e-mail básico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }
@@ -16,7 +15,8 @@ function isValidEmail(email) {
   
   
   module.exports = {
-    isValidEmail, // Exporta a função isValidEmail
-    isValidCPF,
+    isValidEmail, 
     isValidCNPJ,
+    isValidCPF,
+    
   };
